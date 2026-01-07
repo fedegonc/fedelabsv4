@@ -10,6 +10,5 @@ import java.util.Optional;
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
     List<Post> findByPublishedTrueOrderByPublishedAtDesc();
-    List<Post> findByPublishedTrueOrderByPublishedAtDesc(java.time.LocalDateTime before);
     Optional<Post> findBySlugAndPublishedTrue(String slug);
 }
