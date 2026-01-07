@@ -1,6 +1,6 @@
 package com.fedelabsv4.repository;
 
-import com.fedelabsv4.model.Texto;
+import com.fedelabsv4.dominio.Texto;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

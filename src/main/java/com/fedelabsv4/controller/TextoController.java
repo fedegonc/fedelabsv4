@@ -1,6 +1,6 @@
 package com.fedelabsv4.controller;
 
-import com.fedelabsv4.model.Texto;
+import com.fedelabsv4.dominio.Texto;
 import com.fedelabsv4.service.TextoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

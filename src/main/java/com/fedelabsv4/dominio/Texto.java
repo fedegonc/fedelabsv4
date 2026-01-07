@@ -1,4 +1,4 @@
-package com.fedelabsv4.model;
+package com.fedelabsv4.dominio;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
