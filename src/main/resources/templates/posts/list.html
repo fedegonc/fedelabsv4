@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:fragment="styles">
+        <style>
+            .posts-list {
+                margin-top: 2rem;
+            }
+            
+            .post-item {
+                background: white;
+                padding: 1.5rem;
+                border-radius: 0.5rem;
+                margin-bottom: 1rem;
+                border: 1px solid #e1e5e9;
+                transition: all 0.2s;
+            }
+            
+            .post-item:hover {
+                border-color: #2563eb;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            }
+            
+            .post-title {
+                font-size: 1.5rem;
+                margin-bottom: 0.5rem;
+            }
+            
+            .post-title a {
+                color: #1e293b;
+                text-decoration: none;
+            }
+            
+            .post-title a:hover {
+                color: #2563eb;
+            }
+            
+            .post-meta {
+                display: flex;
+                align-items: center;
+                gap: 1rem;
+                font-size: 0.875rem;
+                color: #64748b;
+                margin-bottom: 1rem;
+            }
+            
+            .post-type {
+                padding: 0.25rem 0.5rem;
+                background: #f1f5f9;
+                color: #475569;
+                border-radius: 0.25rem;
+                font-size: 0.75rem;
+                text-transform: uppercase;
+                font-weight: 500;
+            }
+            
+            .post-excerpt {
+                color: #475569;
+                line-height: 1.6;
+            }
+            
+            .no-posts {
+                text-align: center;
+                padding: 3rem 0;
+                color: #64748b;
+            }
+        </style>
+    </th:block>
+</head>
+<body>
+    <h1>Posts</h1>
+    
+    <div class="posts-list">
+        <div th:if="${posts.empty}" class="no-posts">
+            <p>No hay posts publicados aún.</p>
+        </div>
+        
+        <div th:each="post : ${posts}" class="post-item">
+            <h2 class="post-title">
+                <a th:href="@{'/posts/' + ${post.slug}}" th:text="${post.title}"></a>
+            </h2>
+            <div class="post-meta">
+                <span class="post-type" th:text="${post.type}"></span>
+                <span th:text="${#temporals.format(post.publishedAt, 'dd MMMM yyyy')}"></span>
+                <span th:text="${post.estimatedMinutes + ' minutos de lectura'}"></span>
+            </div>
+            <div class="post-excerpt" th:text="${#strings.abbreviate(post.content, 200)}"></div>
+        </div>
+    </div>
+</body>
+</html>

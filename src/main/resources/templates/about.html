@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:fragment="styles">
+        <style>
+            .about-content {
+                max-width: 700px;
+                margin: 0 auto;
+            }
+            
+            .section {
+                margin-bottom: 3rem;
+            }
+            
+            .section h2 {
+                font-size: 1.75rem;
+                margin-bottom: 1rem;
+                color: #1e293b;
+            }
+            
+            .principles ul {
+                list-style: none;
+                padding: 0;
+            }
+            
+            .principles li {
+                padding: 1rem;
+                background: #f8fafc;
+                border-left: 4px solid #2563eb;
+                margin-bottom: 0.5rem;
+                border-radius: 0.25rem;
+            }
+            
+            .method-steps {
+                counter-reset: step;
+            }
+            
+            .method-steps li {
+                counter-increment: step;
+                margin-bottom: 1rem;
+                padding-left: 3rem;
+                position: relative;
+            }
+            
+            .method-steps li::before {
+                content: counter(step);
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 2rem;
+                height: 2rem;
+                background: #2563eb;
+                color: white;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: bold;
+            }
+            
+            .limits {
+                background: #fef3c7;
+                padding: 1.5rem;
+                border-radius: 0.5rem;
+                border: 1px solid #f59e0b;
+            }
+            
+            .limits h3 {
+                color: #92400e;
+                margin-bottom: 0.5rem;
+            }
+        </style>
+    </th:block>
+</head>
+<body>
+    <div class="about-content">
+        <section class="section">
+            <h1>About</h1>
+            <p>Blog técnico para curiosos con poco tiempo. Escribo sobre código, sistemas y ideas que me interesan.</p>
+        </section>
+        
+        <section class="section principles">
+            <h2>Principios</h2>
+            <ul>
+                <li>Sustancia sobre forma - El código habla más que las palabras</li>
+                <li>Práctico sobre teórico - Ejecución > Especulación</li>
+                <li>Simple sobre complejo - Si no puedes explicarlo simplemente, no lo entiendes</li>
+                <li>Curiosidad sobre certeza - Aprender siempre sobre tener siempre la razón</li>
+            </ul>
+        </section>
+        
+        <section class="section method">
+            <h2>Método de trabajo</h2>
+            <ol class="method-steps">
+                <li>Identificar un problema real</li>
+                <li>Construir la solución más simple posible</li>
+                <li>Documentar el proceso</li>
+                <li>Compartir los resultados</li>
+                <li>Iterar o descartar</li>
+            </ol>
+        </section>
+        
+        <section class="section limits">
+            <h2>Límites claros</h2>
+            <h3>Lo que hago:</h3>
+            <ul>
+                <li>Código funcional y probado</li>
+                <li>Sistemas simples y escalables</li>
+                <li>Artículos técnicos directos</li>
+            </ul>
+            
+            <h3>Lo que no hago:</h3>
+            <ul>
+                <li>Tutoriales paso a paso</li>
+                <li>Contenido patrocinado</li>
+                <li>Opiniones sin fundamento técnico</li>
+            </ul>
+        </section>
+    </div>
+</body>
+</html>

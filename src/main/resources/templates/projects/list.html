@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:fragment="styles">
+        <style>
+            .projects-list {
+                margin-top: 2rem;
+            }
+            
+            .project-item {
+                background: white;
+                padding: 1.5rem;
+                border-radius: 0.5rem;
+                margin-bottom: 1rem;
+                border: 1px solid #e1e5e9;
+            }
+            
+            .project-name {
+                font-size: 1.5rem;
+                margin-bottom: 0.5rem;
+            }
+            
+            .project-name a {
+                color: #1e293b;
+                text-decoration: none;
+            }
+            
+            .project-name a:hover {
+                color: #2563eb;
+            }
+            
+            .project-status {
+                display: inline-block;
+                padding: 0.25rem 0.5rem;
+                border-radius: 0.25rem;
+                font-size: 0.75rem;
+                font-weight: 500;
+                margin-bottom: 0.5rem;
+            }
+            
+            .status-active {
+                background: #dcfce7;
+                color: #166534;
+            }
+            
+            .status-planning {
+                background: #fef3c7;
+                color: #92400e;
+            }
+            
+            .status-completed {
+                background: #dbeafe;
+                color: #1e40af;
+            }
+            
+            .project-description {
+                color: #475569;
+                margin-bottom: 1rem;
+            }
+            
+            .project-link {
+                color: #2563eb;
+                text-decoration: none;
+                font-size: 0.875rem;
+            }
+            
+            .project-link:hover {
+                text-decoration: underline;
+            }
+        </style>
+    </th:block>
+</head>
+<body>
+    <h1>Proyectos</h1>
+    
+    <div class="projects-list">
+        <div th:if="${projects.empty}" class="no-projects">
+            <p>No hay proyectos aún.</p>
+        </div>
+        
+        <div th:each="project : ${projects}" class="project-item">
+            <h2 class="project-name">
+                <a th:href="@{'/projects/' + ${project.slug}}" th:text="${project.name}"></a>
+            </h2>
+            <span class="project-status" 
+                  th:classappend="'status-' + ${#strings.toLowerCase(project.status)}"
+                  th:text="${project.status}"></span>
+            <p class="project-description" th:text="${project.description}"></p>
+            <a th:if="${project.repositoryUrl}" 
+               th:href="${project.repositoryUrl}" 
+               class="project-link" 
+               target="_blank">→ Ver código</a>
+        </div>
+    </div>
+</body>
+</html>

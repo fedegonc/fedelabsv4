@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:fragment="styles">
+        <style>
+            .hero {
+                text-align: center;
+                padding: 3rem 0;
+            }
+            
+            .hero h1 {
+                font-size: 2.5rem;
+                margin-bottom: 1rem;
+            }
+            
+            .hero p {
+                font-size: 1.25rem;
+                color: #64748b;
+                margin-bottom: 2rem;
+            }
+            
+            .latest-posts {
+                margin-top: 3rem;
+            }
+            
+            .post-preview {
+                background: white;
+                padding: 1.5rem;
+                border-radius: 0.5rem;
+                margin-bottom: 1rem;
+                border: 1px solid #e1e5e9;
+                transition: border-color 0.2s;
+            }
+            
+            .post-preview:hover {
+                border-color: #2563eb;
+            }
+            
+            .post-title {
+                font-size: 1.25rem;
+                margin-bottom: 0.5rem;
+            }
+            
+            .post-meta {
+                font-size: 0.875rem;
+                color: #64748b;
+                margin-bottom: 0.5rem;
+            }
+            
+            .post-type {
+                display: inline-block;
+                padding: 0.25rem 0.5rem;
+                background: #f1f5f9;
+                color: #475569;
+                border-radius: 0.25rem;
+                font-size: 0.75rem;
+                margin-right: 0.5rem;
+            }
+            
+            .read-time {
+                color: #64748b;
+                font-size: 0.875rem;
+            }
+            
+            .view-all {
+                text-align: center;
+                margin-top: 2rem;
+            }
+        </style>
+    </th:block>
+</head>
+<body>
+    <section class="hero">
+        <h1>Blog técnico para curiosos</h1>
+        <p>Ideas, código y proyectos. Sin relleno, solo sustancia.</p>
+        <a href="/posts" class="btn">Leer más</a>
+    </section>
+    
+    <section class="latest-posts">
+        <h2>Últimos contenidos</h2>
+        
+        <div th:if="${posts.empty}" class="no-posts">
+            <p>Próximamente...</p>
+        </div>
+        
+        <div th:each="post : ${posts}" class="post-preview">
+            <h3 class="post-title">
+                <a th:href="@{'/posts/' + ${post.slug}}" th:text="${post.title}"></a>
+            </h3>
+            <div class="post-meta">
+                <span class="post-type" th:text="${post.type}"></span>
+                <span th:text="${#temporals.format(post.publishedAt, 'dd MMM yyyy')}"></span>
+                <span class="read-time" th:text="${post.estimatedMinutes + ' min'}"></span>
+            </div>
+        </div>
+        
+        <div class="view-all">
+            <a href="/posts" class="btn">Ver todos los posts</a>
+        </div>
+    </section>
+</body>
+</html>

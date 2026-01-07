@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:fragment="styles">
+        <style>
+            .ideas-list {
+                margin-top: 2rem;
+            }
+            
+            .idea-item {
+                background: white;
+                padding: 1.5rem;
+                border-radius: 0.5rem;
+                margin-bottom: 1rem;
+                border: 1px solid #e1e5e9;
+            }
+            
+            .idea-title {
+                font-size: 1.25rem;
+                margin-bottom: 0.5rem;
+                color: #1e293b;
+            }
+            
+            .idea-status {
+                display: inline-block;
+                padding: 0.25rem 0.5rem;
+                border-radius: 0.25rem;
+                font-size: 0.75rem;
+                font-weight: 500;
+                margin-bottom: 1rem;
+            }
+            
+            .status-activa {
+                background: #dcfce7;
+                color: #166534;
+            }
+            
+            .status-descartada {
+                background: #fecaca;
+                color: #991b1b;
+            }
+            
+            .idea-description {
+                color: #475569;
+                line-height: 1.6;
+            }
+            
+            .idea-meta {
+                font-size: 0.875rem;
+                color: #64748b;
+                margin-top: 1rem;
+            }
+        </style>
+    </th:block>
+</head>
+<body>
+    <h1>Ideas</h1>
+    
+    <div class="ideas-list">
+        <div th:if="${ideas.empty}" class="no-ideas">
+            <p>No hay ideas registradas aún.</p>
+        </div>
+        
+        <div th:each="idea : ${ideas}" class="idea-item">
+            <h2 class="idea-title" th:text="${idea.title}"></h2>
+            <span class="idea-status" 
+                  th:classappend="'status-' + ${idea.status}"
+                  th:text="${idea.status}"></span>
+            <p class="idea-description" th:text="${idea.description}"></p>
+            <div class="idea-meta">
+                Actualizada: <span th:text="${#temporals.format(idea.updatedAt, 'dd MMMM yyyy')}"></span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
