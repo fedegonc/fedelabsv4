@@ -318,17 +318,14 @@
                 <div class="form-group">
                     <label for="font-select">Tipo de letra:</label>
                     <select id="font-select">
-                        <option value="Arial, sans-serif">Arial</option>
-                        <option value="'Times New Roman', serif">Times New Roman</option>
-                        <option value="'Courier New', monospace">Courier New</option>
-                        <option value="Georgia, serif">Georgia</option>
-                        <option value="Verdana, sans-serif">Verdana</option>
-                        <option value="'Trebuchet MS', sans-serif">Trebuchet MS</option>
-                        <option value="'Comic Sans MS', cursive">Comic Sans MS</option>
-                        <option value="Impact, sans-serif">Impact</option>
-                        <option value="'Lucida Console', monospace">Lucida Console</option>
-                        <option value="Tahoma, sans-serif">Tahoma</option>
+                        <option value="Arial, sans-serif">Arial (por defecto)</option>
                     </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="font-upload">Subir fuente personalizada (.ttf, .otf, .woff):</label>
+                    <input type="file" id="font-upload" accept=".ttf,.otf,.woff,.woff2" style="padding: 0.5rem;">
+                    <button class="btn btn-secondary" id="upload-btn" style="margin-top: 0.5rem;">Subir fuente</button>
                 </div>
                 
                 <div class="style-options">
@@ -391,6 +388,8 @@
         const copyBtn = document.getElementById('copy-btn');
         const resetBtn = document.getElementById('reset-btn');
         const successMsg = document.getElementById('success-msg');
+        const fontUpload = document.getElementById('font-upload');
+        const uploadBtn = document.getElementById('upload-btn');
         
         function updatePreview() {
             const selectedFont = fontSelect.value;
@@ -433,6 +432,92 @@
             updatePreview();
         }
         
+        async function loadFonts() {
+            try {
+                const response = await fetch('/fonts/list');
+                const fonts = await response.json();
+                
+                for (const font of fonts) {
+                    try {
+                        const style = document.createElement('style');
+                        style.textContent = `
+                            @font-face {
+                                font-family: '${font.name}';
+                                src: url('${font.path}');
+                            }
+                        `;
+                        document.head.appendChild(style);
+                        
+                        const option = document.createElement('option');
+                        option.value = font.name;
+                        option.textContent = font.name;
+                        option.style.fontFamily = font.name;
+                        fontSelect.appendChild(option);
+                    } catch (err) {
+                        console.error('Error cargando fuente:', font.name, err);
+                    }
+                }
+            } catch (err) {
+                console.error('Error obteniendo lista de fuentes:', err);
+            }
+        }
+        
+        async function uploadFont() {
+            const file = fontUpload.files[0];
+            if (!file) {
+                alert('Seleccioná un archivo primero');
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append('file', file);
+            
+            try {
+                uploadBtn.disabled = true;
+                uploadBtn.textContent = 'Subiendo...';
+                
+                const response = await fetch('/fonts/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    const fontName = result.fileName.replace(/\.[^/.]+$/, '');
+                    
+                    const style = document.createElement('style');
+                    style.textContent = `
+                        @font-face {
+                            font-family: '${fontName}';
+                            src: url('${result.fontPath}');
+                        }
+                    `;
+                    document.head.appendChild(style);
+                    
+                    const option = document.createElement('option');
+                    option.value = fontName;
+                    option.textContent = fontName;
+                    option.style.fontFamily = fontName;
+                    fontSelect.appendChild(option);
+                    
+                    fontSelect.value = fontName;
+                    updatePreview();
+                    
+                    alert('Fuente subida exitosamente: ' + result.fileName);
+                    fontUpload.value = '';
+                } else {
+                    alert('Error: ' + result.message);
+                }
+            } catch (err) {
+                alert('Error al subir fuente: ' + err);
+                console.error(err);
+            } finally {
+                uploadBtn.disabled = false;
+                uploadBtn.textContent = 'Subir fuente';
+            }
+        }
+        
         fontSelect.addEventListener('change', updatePreview);
         textInput.addEventListener('input', updatePreview);
         boldCheck.addEventListener('change', updatePreview);
@@ -441,7 +526,9 @@
         textColorPicker.addEventListener('input', updatePreview);
         copyBtn.addEventListener('click', copyToClipboard);
         resetBtn.addEventListener('click', resetAll);
+        uploadBtn.addEventListener('click', uploadFont);
         
+        loadFonts();
         updatePreview();
     </script>
 </body>

@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Fuentes</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background: #f8fafc;
+            padding: 2rem;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            margin-bottom: 0.5rem;
+            color: #1e293b;
+        }
+        
+        .subtitle {
+            color: #64748b;
+            margin-bottom: 2rem;
+        }
+        
+        .upload-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .upload-section h2 {
+            margin-bottom: 1rem;
+            font-size: 1.25rem;
+            color: #334155;
+        }
+        
+        .upload-form {
+            display: flex;
+            gap: 1rem;
+            align-items: end;
+        }
+        
+        .form-group {
+            flex: 1;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #334155;
+        }
+        
+        input[type="file"] {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e1e5e9;
+            border-radius: 0.375rem;
+            font-size: 1rem;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.375rem;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+        
+        .btn-primary {
+            background: #2563eb;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #1d4ed8;
+        }
+        
+        .btn-primary:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
+        }
+        
+        .btn-danger {
+            background: #dc2626;
+            color: white;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+        }
+        
+        .btn-danger:hover {
+            background: #b91c1c;
+        }
+        
+        .btn-back {
+            background: #64748b;
+            color: white;
+            display: inline-block;
+            text-decoration: none;
+            margin-bottom: 1rem;
+        }
+        
+        .btn-back:hover {
+            background: #475569;
+        }
+        
+        .fonts-list {
+            background: white;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .fonts-list h2 {
+            margin-bottom: 1.5rem;
+            font-size: 1.25rem;
+            color: #334155;
+        }
+        
+        .font-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border: 1px solid #e1e5e9;
+            border-radius: 0.375rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .font-info {
+            flex: 1;
+        }
+        
+        .font-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 0.25rem;
+        }
+        
+        .font-file {
+            font-size: 0.875rem;
+            color: #64748b;
+            font-family: monospace;
+        }
+        
+        .font-preview {
+            padding: 0.5rem 1rem;
+            background: #f8fafc;
+            border-radius: 0.25rem;
+            margin: 0 1rem;
+            font-size: 1.1rem;
+        }
+        
+        .no-fonts {
+            text-align: center;
+            padding: 3rem;
+            color: #64748b;
+        }
+        
+        .success-message, .error-message {
+            padding: 1rem;
+            border-radius: 0.375rem;
+            margin-bottom: 1rem;
+            display: none;
+        }
+        
+        .success-message {
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #86efac;
+        }
+        
+        .error-message {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+        }
+        
+        .success-message.show, .error-message.show {
+            display: block;
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+            
+            .upload-form {
+                flex-direction: column;
+            }
+            
+            .font-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .font-preview {
+                margin: 0;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/" class="btn btn-back">← Volver al selector</a>
+        
+        <h1>Gestión de Fuentes</h1>
+        <p class="subtitle">Subí y administrá tus fuentes personalizadas</p>
+        
+        <div class="success-message" id="success-msg"></div>
+        <div class="error-message" id="error-msg"></div>
+        
+        <div class="upload-section">
+            <h2>Subir nueva fuente</h2>
+            <div class="upload-form">
+                <div class="form-group">
+                    <label for="font-upload">Archivo de fuente (.ttf, .otf, .woff, .woff2):</label>
+                    <input type="file" id="font-upload" accept=".ttf,.otf,.woff,.woff2">
+                </div>
+                <button class="btn btn-primary" id="upload-btn">Subir fuente</button>
+            </div>
+        </div>
+        
+        <div class="fonts-list">
+            <h2>Fuentes disponibles</h2>
+            <div id="fonts-container">
+                <div class="no-fonts">Cargando fuentes...</div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const fontUpload = document.getElementById('font-upload');
+        const uploadBtn = document.getElementById('upload-btn');
+        const fontsContainer = document.getElementById('fonts-container');
+        const successMsg = document.getElementById('success-msg');
+        const errorMsg = document.getElementById('error-msg');
+        
+        function showMessage(type, message) {
+            const msgElement = type === 'success' ? successMsg : errorMsg;
+            msgElement.textContent = message;
+            msgElement.classList.add('show');
+            setTimeout(() => {
+                msgElement.classList.remove('show');
+            }, 3000);
+        }
+        
+        async function loadFonts() {
+            try {
+                const response = await fetch('/fonts/list');
+                const fonts = await response.json();
+                
+                if (fonts.length === 0) {
+                    fontsContainer.innerHTML = '<div class="no-fonts">No hay fuentes subidas aún</div>';
+                    return;
+                }
+                
+                fontsContainer.innerHTML = '';
+                
+                for (const font of fonts) {
+                    const style = document.createElement('style');
+                    style.textContent = `
+                        @font-face {
+                            font-family: '${font.name}';
+                            src: url('${font.path}');
+                        }
+                    `;
+                    document.head.appendChild(style);
+                    
+                    const fontItem = document.createElement('div');
+                    fontItem.className = 'font-item';
+                    fontItem.innerHTML = `
+                        <div class="font-info">
+                            <div class="font-name">${font.name}</div>
+                            <div class="font-file">${font.fileName}</div>
+                        </div>
+                        <div class="font-preview" style="font-family: '${font.name}'">
+                            Ejemplo de texto
+                        </div>
+                        <button class="btn btn-danger" onclick="deleteFont('${font.fileName}')">
+                            Eliminar
+                        </button>
+                    `;
+                    fontsContainer.appendChild(fontItem);
+                }
+            } catch (err) {
+                console.error('Error cargando fuentes:', err);
+                fontsContainer.innerHTML = '<div class="no-fonts">Error al cargar fuentes</div>';
+            }
+        }
+        
+        async function uploadFont() {
+            const file = fontUpload.files[0];
+            if (!file) {
+                showMessage('error', 'Seleccioná un archivo primero');
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append('file', file);
+            
+            try {
+                uploadBtn.disabled = true;
+                uploadBtn.textContent = 'Subiendo...';
+                
+                const response = await fetch('/fonts/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showMessage('success', 'Fuente subida exitosamente: ' + result.fileName);
+                    fontUpload.value = '';
+                    await loadFonts();
+                } else {
+                    showMessage('error', result.message);
+                }
+            } catch (err) {
+                showMessage('error', 'Error al subir fuente: ' + err);
+                console.error(err);
+            } finally {
+                uploadBtn.disabled = false;
+                uploadBtn.textContent = 'Subir fuente';
+            }
+        }
+        
+        async function deleteFont(fileName) {
+            if (!confirm('¿Estás seguro de eliminar esta fuente?')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch('/fonts/delete/' + fileName, {
+                    method: 'DELETE'
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showMessage('success', 'Fuente eliminada exitosamente');
+                    await loadFonts();
+                } else {
+                    showMessage('error', result.message);
+                }
+            } catch (err) {
+                showMessage('error', 'Error al eliminar fuente: ' + err);
+                console.error(err);
+            }
+        }
+        
+        uploadBtn.addEventListener('click', uploadFont);
+        loadFonts();
+    </script>
+</body>
+</html>
