@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FedeLabs</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background: #f8fafc;
+            padding: 2rem;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .container {
+            max-width: 800px;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 3rem;
+            color: #1e293b;
+            margin-bottom: 1rem;
+        }
+        
+        p {
+            font-size: 1.25rem;
+            color: #64748b;
+            margin-bottom: 2rem;
+        }
+        
+        .links {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 1rem 2rem;
+            background: #2563eb;
+            color: white;
+            text-decoration: none;
+            border-radius: 0.5rem;
+            font-size: 1.1rem;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+        
+        .btn:hover {
+            background: #1d4ed8;
+        }
+        
+        .btn-secondary {
+            background: #64748b;
+        }
+        
+        .btn-secondary:hover {
+            background: #475569;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            p {
+                font-size: 1rem;
+            }
+            
+            .links {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Contenido de prueba</h1>
+        <p>Landing page en construcción</p>
+        
+        <div class="links">
+            <a href="/letras" class="btn">Selector de Letras</a>
+            <a href="/fonts" class="btn btn-secondary">Gestión de Fuentes</a>
+        </div>
+    </div>
+</body>
+</html>
