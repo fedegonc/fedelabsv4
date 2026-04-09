@@ -1,20 +1,13 @@
 package com.fedelabsv4.controller;
 
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
-import org.springframework.http.HttpHeaders;
+import com.fedelabsv4.service.CloudinaryService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,7 +17,10 @@ import java.util.Map;
 @RequestMapping("/images")
 public class ImagesController {
     
-    private static final String UPLOAD_DIR = "src/main/resources/static/images/";
+    @Autowired
+    private CloudinaryService cloudinaryService;
+    
+    private final List<Map<String, String>> uploadedImages = new ArrayList<>();
     
     @GetMapping
     public String imagesPage() {
@@ -58,22 +54,26 @@ public class ImagesController {
         }
         
         try {
-            File uploadDir = new File(UPLOAD_DIR);
-            if (!uploadDir.exists()) {
-                uploadDir.mkdirs();
-            }
+            Map<String, Object> uploadResult = cloudinaryService.uploadImage(file);
             
-            Path filePath = Paths.get(UPLOAD_DIR + fileName);
-            Files.write(filePath, file.getBytes());
+            String publicId = (String) uploadResult.get("public_id");
+            String url = (String) uploadResult.get("secure_url");
+            
+            Map<String, String> imageInfo = new HashMap<>();
+            imageInfo.put("fileName", fileName);
+            imageInfo.put("publicId", publicId);
+            imageInfo.put("url", url);
+            uploadedImages.add(imageInfo);
             
             response.put("success", true);
-            response.put("message", "Imagen subida exitosamente");
+            response.put("message", "Imagen subida exitosamente a Cloudinary");
             response.put("fileName", fileName);
-            response.put("imagePath", "/images/" + fileName);
+            response.put("publicId", publicId);
+            response.put("url", url);
             
             return ResponseEntity.ok(response);
             
-        } catch (IOException e) {
+        } catch (Exception e) {
             response.put("success", false);
             response.put("message", "Error al subir archivo: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
@@ -83,60 +83,23 @@ public class ImagesController {
     @GetMapping("/list")
     @ResponseBody
     public ResponseEntity<List<Map<String, String>>> listImages() {
-        List<Map<String, String>> images = new ArrayList<>();
-        
-        File uploadDir = new File(UPLOAD_DIR);
-        if (uploadDir.exists() && uploadDir.isDirectory()) {
-            File[] files = uploadDir.listFiles((dir, name) -> 
-                name.toLowerCase().endsWith(".jpg") || 
-                name.toLowerCase().endsWith(".jpeg") || 
-                name.toLowerCase().endsWith(".png") || 
-                name.toLowerCase().endsWith(".gif") ||
-                name.toLowerCase().endsWith(".webp") ||
-                name.toLowerCase().endsWith(".svg")
-            );
-            
-            if (files != null) {
-                for (File file : files) {
-                    Map<String, String> imageInfo = new HashMap<>();
-                    String fileName = file.getName();
-                    
-                    imageInfo.put("fileName", fileName);
-                    imageInfo.put("path", "/images/" + fileName);
-                    imageInfo.put("size", String.format("%.2f KB", file.length() / 1024.0));
-                    
-                    images.add(imageInfo);
-                }
-            }
-        }
-        
-        return ResponseEntity.ok(images);
+        return ResponseEntity.ok(uploadedImages);
     }
     
-    @DeleteMapping("/delete/{fileName:.+}")
+    @DeleteMapping("/delete/{publicId:.+}")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> deleteImage(@PathVariable String fileName) {
+    public ResponseEntity<Map<String, Object>> deleteImage(@PathVariable String publicId) {
         Map<String, Object> response = new HashMap<>();
         
         try {
-            Path filePath = Paths.get(UPLOAD_DIR + fileName);
-            File file = filePath.toFile();
+            cloudinaryService.deleteImage(publicId);
             
-            if (file.exists() && file.isFile()) {
-                if (file.delete()) {
-                    response.put("success", true);
-                    response.put("message", "Imagen eliminada exitosamente");
-                    return ResponseEntity.ok(response);
-                } else {
-                    response.put("success", false);
-                    response.put("message", "No se pudo eliminar el archivo");
-                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
-                }
-            } else {
-                response.put("success", false);
-                response.put("message", "Archivo no encontrado");
-                return ResponseEntity.notFound().build();
-            }
+            uploadedImages.removeIf(img -> publicId.equals(img.get("publicId")));
+            
+            response.put("success", true);
+            response.put("message", "Imagen eliminada exitosamente de Cloudinary");
+            return ResponseEntity.ok(response);
+            
         } catch (Exception e) {
             response.put("success", false);
             response.put("message", "Error al eliminar: " + e.getMessage());
