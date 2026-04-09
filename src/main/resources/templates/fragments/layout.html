@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head th:replace="fragments/head :: head(${pageTitle ?: 'FedeLabs'})"></head>
+<body>
+    <div th:replace="fragments/navbar :: navbar"></div>
+    
+    <div layout:fragment="content">
+        <!-- El contenido de cada página va aquí -->
+    </div>
+</body>
+</html>
