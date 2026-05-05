@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apuntes - FedeLabs</title>
+    <link rel="stylesheet" th:href="@{/styles/header.css}">
+    <link rel="stylesheet" th:href="@{/styles/main.css}">
+    <style>
+        .apuntes-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+
+        .page-title {
+            font-size: 48px;
+            font-weight: 900;
+            color: white;
+            margin-bottom: 40px;
+            text-align: left;
+        }
+
+        .apuntes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .apunte-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .apunte-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .apunte-categoria {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .apunte-titulo {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 15px;
+        }
+
+        .apunte-preview {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .apunte-fecha {
+            color: #999;
+            font-size: 12px;
+        }
+
+        .admin-btn {
+            position: fixed;
+            bottom: 40px;
+            right: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .admin-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+            color: white;
+        }
+
+        .empty-state h2 {
+            font-size: 32px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .page-title {
+                font-size: 36px;
+            }
+
+            .apuntes-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="logo">Federico Goncalvez</div>
+        </div>
+    </nav>
+
+    <div class="apuntes-container">
+        <h1 class="page-title">Mis Apuntes</h1>
+
+        <div class="apuntes-grid" th:if="${!apuntes.isEmpty()}">
+            <div class="apunte-card" th:each="apunte : ${apuntes}" 
+                 th:onclick="'window.location.href=\'/apuntes/' + ${apunte.id} + '\''">
+                <span class="apunte-categoria" th:text="${apunte.categoria}">Categoría</span>
+                <h2 class="apunte-titulo" th:text="${apunte.titulo}">Título del Apunte</h2>
+                <p class="apunte-preview" th:text="${apunte.contenido}">Contenido del apunte...</p>
+                <p class="apunte-fecha" th:text="${#temporals.format(apunte.fechaCreacion, 'dd/MM/yyyy HH:mm')}">Fecha</p>
+            </div>
+        </div>
+
+        <div class="empty-state" th:if="${apuntes.isEmpty()}">
+            <h2>No hay apuntes todavía</h2>
+            <p>Crea tu primer apunte usando el botón + de abajo</p>
+        </div>
+    </div>
+
+    <a href="/admin/apuntes" class="admin-btn" title="Crear nuevo apunte">+</a>
+</body>
+</html>

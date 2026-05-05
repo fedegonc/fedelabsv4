@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Apuntes</title>
+    <link rel="stylesheet" th:href="@{/styles/header.css}">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #ffffff;
+            color: #1a1a1a;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: clamp(32px, 5vw, 60px) clamp(20px, 4vw, 40px);
+        }
+
+        .header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: clamp(24px, 4vw, 40px);
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        h1 {
+            font-size: clamp(32px, 5vw, 48px);
+            font-weight: 900;
+            letter-spacing: -1px;
+        }
+
+        .btn-new {
+            background: #1a1a1a;
+            color: white;
+            padding: 12px 24px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .btn-new:hover { background: #333; }
+
+        .lista {
+            border-top: 2px solid #1a1a1a;
+        }
+
+        .item {
+            display: grid;
+            grid-template-columns: 80px 1fr auto;
+            gap: 16px;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .item-img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            background: #eee;
+        }
+
+        .item-info {
+            min-width: 0;
+        }
+
+        .item-tag {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #999;
+            margin-bottom: 4px;
+        }
+
+        .item-title {
+            font-size: clamp(15px, 1.5vw, 18px);
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .item-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-edit, .btn-delete {
+            padding: 8px 14px;
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .btn-edit {
+            background: white;
+            color: #1a1a1a;
+            border: 1px solid #1a1a1a;
+        }
+
+        .btn-edit:hover { background: #f5f5f5; }
+
+        .btn-delete {
+            background: white;
+            color: #c0392b;
+            border: 1px solid #c0392b;
+        }
+
+        .btn-delete:hover { background: #c0392b; color: white; }
+
+        .delete-form { display: inline; }
+
+        .back {
+            display: inline-block;
+            margin-bottom: 24px;
+            color: #666;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .back:hover { color: #1a1a1a; }
+
+        @media (max-width: 600px) {
+            .item {
+                grid-template-columns: 60px 1fr;
+                grid-template-areas:
+                    "img info"
+                    "actions actions";
+            }
+            .item-img { width: 60px; height: 60px; grid-area: img; }
+            .item-info { grid-area: info; }
+            .item-actions { grid-area: actions; justify-content: flex-end; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="logo">Federico Goncalvez</div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <a href="/" class="back">← Volver al inicio</a>
+
+        <div class="header-row">
+            <h1>Administrar Apuntes</h1>
+            <a href="/admin/apuntes/nuevo" class="btn-new">+ Nuevo Apunte</a>
+        </div>
+
+        <div class="lista">
+            <div th:each="apunte : ${apuntes}" class="item">
+                <img class="item-img" th:src="${apunte.imageUrl}" th:alt="${apunte.titulo}">
+                <div class="item-info">
+                    <div class="item-tag" th:text="${apunte.categoria}">Etiqueta</div>
+                    <div class="item-title" th:text="${apunte.titulo}">Título</div>
+                </div>
+                <div class="item-actions">
+                    <a th:href="@{'/admin/apuntes/editar/' + ${apunte.id}}" class="btn-edit">Editar</a>
+                    <form class="delete-form" th:action="@{'/admin/apuntes/eliminar/' + ${apunte.id}}" method="post"
+                          onsubmit="return confirm('¿Eliminar este apunte?');">
+                        <button type="submit" class="btn-delete">Eliminar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

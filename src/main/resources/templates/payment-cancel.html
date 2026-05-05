@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pago Cancelado</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 500px;
+            width: 100%;
+            padding: 40px;
+            text-align: center;
+            animation: slideUp 0.5s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .cancel-icon {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 30px;
+            animation: scaleIn 0.5s ease-out 0.2s both;
+        }
+
+        @keyframes scaleIn {
+            from {
+                transform: scale(0);
+            }
+            to {
+                transform: scale(1);
+            }
+        }
+
+        .x-mark {
+            width: 50px;
+            height: 50px;
+            position: relative;
+        }
+
+        .x-mark::before,
+        .x-mark::after {
+            content: '';
+            position: absolute;
+            width: 4px;
+            height: 50px;
+            background: white;
+            left: 50%;
+            top: 0;
+            margin-left: -2px;
+        }
+
+        .x-mark::before {
+            transform: rotate(45deg);
+        }
+
+        .x-mark::after {
+            transform: rotate(-45deg);
+        }
+
+        h1 {
+            color: #1a1a1a;
+            margin-bottom: 15px;
+            font-size: 32px;
+            animation: fadeIn 0.5s ease-out 0.3s both;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .message {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 16px;
+            line-height: 1.6;
+            animation: fadeIn 0.5s ease-out 0.4s both;
+        }
+
+        .info-box {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+            text-align: left;
+            animation: fadeIn 0.5s ease-out 0.5s both;
+        }
+
+        .info-box h3 {
+            color: #856404;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .info-box ul {
+            color: #856404;
+            margin-left: 20px;
+        }
+
+        .info-box li {
+            margin-bottom: 8px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 16px 32px;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+            animation: fadeIn 0.5s ease-out 0.6s both;
+            margin: 5px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(240, 147, 251, 0.3);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+        }
+
+        .btn-secondary:hover {
+            box-shadow: 0 10px 20px rgba(108, 117, 125, 0.3);
+        }
+
+        .details {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+            text-align: left;
+            animation: fadeIn 0.5s ease-out 0.5s both;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            color: #666;
+            font-weight: 500;
+        }
+
+        .detail-value {
+            color: #1a1a1a;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="cancel-icon">
+            <div class="x-mark"></div>
+        </div>
+
+        <h1>Pago Cancelado</h1>
+        
+        <p class="message">
+            Has cancelado el proceso de pago. No se ha realizado ningún cargo a tu tarjeta.
+        </p>
+
+        <div class="details">
+            <div class="detail-row">
+                <span class="detail-label">Estado:</span>
+                <span class="detail-value" style="color: #f5576c;">✗ Cancelado</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Fecha:</span>
+                <span class="detail-value" id="currentDate"></span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Razón:</span>
+                <span class="detail-value">Cancelado por el usuario</span>
+            </div>
+        </div>
+
+        <div class="info-box">
+            <h3>💡 ¿Qué puedes hacer ahora?</h3>
+            <ul>
+                <li>Intentar el pago nuevamente</li>
+                <li>Verificar tu información de pago</li>
+                <li>Contactar con soporte si tienes problemas</li>
+                <li>Volver al inicio para explorar más opciones</li>
+            </ul>
+        </div>
+
+        <div>
+            <a href="/payment-example" class="btn">Intentar de Nuevo</a>
+            <a href="/" class="btn btn-secondary">Volver al Inicio</a>
+        </div>
+    </div>
+
+    <script>
+        const now = new Date();
+        const options = { 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        };
+        document.getElementById('currentDate').textContent = now.toLocaleDateString('es-ES', options);
+    </script>
+</body>
+</html>

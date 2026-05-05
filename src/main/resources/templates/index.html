@@ -1,18 +1,135 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="fragments/head :: head('FedeLabs - Inicio')"></head>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Federico Goncalvez</title>
+    <link rel="stylesheet" th:href="@{/styles/header.css}">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #ffffff;
+            color: #1a1a1a;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: clamp(32px, 5vw, 60px) clamp(20px, 4vw, 40px);
+        }
+
+        .page-title {
+            font-size: clamp(26px, 3.2vw, 36px);
+            font-weight: 800;
+            letter-spacing: -1px;
+            margin-bottom: 12px;
+            line-height: 1.15;
+        }
+
+        .page-subtitle {
+            font-size: clamp(15px, 1.6vw, 18px);
+            color: #666;
+            margin-bottom: clamp(32px, 5vw, 60px);
+            max-width: 700px;
+            line-height: 1.5;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: clamp(12px, 2vw, 24px);
+        }
+
+        .card {
+            position: relative;
+            aspect-ratio: 3 / 4;
+            overflow: hidden;
+            cursor: pointer;
+            background: #eee;
+            text-decoration: none;
+            color: white;
+        }
+
+        .card-img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+
+        .card:hover .card-img {
+            transform: scale(1.05);
+        }
+
+        .card-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg,
+                rgba(0,0,0,0.45) 0%,
+                rgba(0,0,0,0) 35%,
+                rgba(0,0,0,0) 55%,
+                rgba(0,0,0,0.75) 100%);
+        }
+
+        .card-tag {
+            position: absolute;
+            top: 14px;
+            left: 14px;
+            background: rgba(255,255,255,0.95);
+            color: #1a1a1a;
+            padding: 5px 10px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .card-title {
+            position: absolute;
+            left: 18px;
+            right: 18px;
+            bottom: 18px;
+            font-size: clamp(16px, 1.5vw, 22px);
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        @media (max-width: 1200px) {
+            .grid { grid-template-columns: repeat(3, 1fr); }
+        }
+        @media (max-width: 820px) {
+            .grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 480px) {
+            .grid { grid-template-columns: 1fr; }
+            .card { aspect-ratio: 16 / 10; }
+            .card-title { font-size: 20px; }
+        }
+    </style>
+</head>
 <body>
-    <div th:replace="fragments/navbar :: navbar"></div>
-    
-    <div class="landing-container">
-        <div class="container">
-            <h1>Contenido de prueba</h1>
-            <p>Landing page en construcción</p>
-            
-            <div class="landing-links">
-                <a href="/letras" class="btn btn-primary">Selector de Letras</a>
-                <a href="/fonts" class="btn btn-secondary">Gestión de Fuentes</a>
-            </div>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="logo">Federico Goncalvez</div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1 class="page-title">Apuntes.</h1>
+        <p class="page-subtitle">Notas, ideas sueltas y lo que voy aprendiendo en el camino.</p>
+
+        <div class="grid">
+            <a th:each="apunte : ${apuntes}" class="card"
+               th:href="@{'/apuntes/' + ${apunte.id}}">
+                <img class="card-img" th:src="${apunte.imageUrl}" th:alt="${apunte.titulo}">
+                <div class="card-overlay"></div>
+                <span class="card-tag" th:text="${apunte.categoria}">Etiqueta</span>
+                <h2 class="card-title" th:text="${apunte.titulo}">Título</h2>
+            </a>
         </div>
     </div>
 </body>
