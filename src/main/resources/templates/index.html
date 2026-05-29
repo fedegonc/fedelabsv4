@@ -19,17 +19,15 @@
 
     <div class="container">
 
-        <h1 class="page-title">Apuntes.</h1>
-
-        <p class="page-subtitle">
-            Notas, ideas sueltas y lo que voy aprendiendo en el camino.
-        </p>
+       
 
         <div class="grid">
 
             <a th:each="apunte : ${apuntes}"
                class="card"
-               th:href="@{'/apuntes/' + ${apunte.id}}">
+               th:href="@{/apuntes/{slug}(slug=${apunte.slug})}">
+
+               
 
                 <img class="card-img"
                      th:src="${apunte.imageUrl}"

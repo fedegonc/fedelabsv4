@@ -18,6 +18,11 @@ public class HomeController {
         return "index";
     }
     
+    @GetMapping("/dashboard")
+    public String dashboard() {
+        return "dashboard";
+    }
+
     @GetMapping("/payment-example")
     public String paymentExample() {
         return "payment-example";

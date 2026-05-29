@@ -13,15 +13,16 @@ public class ApunteController {
     @Autowired
     private ApunteService apunteService;
     
+    
     @GetMapping("/apuntes")
     public String listarApuntes(Model model) {
         model.addAttribute("apuntes", apunteService.obtenerTodos());
         return "apuntes/lista";
     }
     
-    @GetMapping("/apuntes/{id}")
-    public String detalleApunte(@PathVariable Long id, Model model) {
-        return apunteService.obtenerPorId(id)
+    @GetMapping("/apuntes/{slug}")
+    public String detalleApunte(@PathVariable String slug, Model model) {
+        return apunteService.obtenerPorSlug(slug)
                 .map(apunte -> {
                     model.addAttribute("apunte", apunte);
                     return "apuntes/detalle";
