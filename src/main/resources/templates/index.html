@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Federico Goncalvez</title>
 
-    <link rel="stylesheet" th:href="@{/styles/header.css}">
-    <link rel="stylesheet" th:href="@{/styles/styles.css}">
+    <link rel="stylesheet" th:href="@{/components/header.css}">
+    <link rel="stylesheet" th:href="@{/css/global.css}">
 </head>
 
 <body>
@@ -53,3 +53,30 @@
 
 </body>
 </html>
+<!-- LISTA 
+        <div class="lista-comentarios">
+
+            <div class="comentario"
+                 th:each="comentario : ${comentarios}">
+
+                <div class="comentario-header">
+
+                    <strong th:text="${comentario.nombre}">
+                        Nombre
+                    </strong>
+
+                    <span th:text="${#temporals.format(comentario.fechaCreacion, 'dd/MM/yyyy HH:mm')}">
+                        Fecha
+                    </span>
+
+                </div>
+
+                <p th:text="${comentario.contenido}">
+                    Comentario
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>-->

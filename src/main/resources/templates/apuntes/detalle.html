@@ -4,8 +4,83 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="${apunte.titulo}">Detalle Apunte</title>
-    <link rel="stylesheet" th:href="@{/styles/header.css}">
-    <style>
+    <link rel="stylesheet" th:href="@{/components/header.css}">
+    <link rel="stylesheet" th:href="@{/components/comentarios.css}">
+
+
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="logo">Federico Goncalvez</div>
+        </div>
+    </nav>
+
+    <article class="article">
+        <a href="/" class="back">← Volver</a>
+        <span class="tag" th:text="${apunte.categoria}">Etiqueta</span>
+        <h1 th:text="${apunte.titulo}">Título</h1>
+        <p class="meta" th:text="${#temporals.format(apunte.fechaCreacion, 'dd MMMM yyyy')}">Fecha</p>
+
+        <img th:if="${apunte.imageUrl}" class="hero-img" th:src="${apunte.imageUrl}" th:alt="${apunte.titulo}">
+
+        <div class="content" th:text="${apunte.contenido}">Contenido</div>
+    </article>
+
+
+    
+    <!-- CAJA DE COMENTARIOS -->
+    <!-- ========================= -->
+
+    <section class="comentarios-container">
+
+        <h2>Comentarios</h2>
+
+        <!-- FORM -->
+        <form class="comentario-form"
+              th:action="@{/comentarios/guardar}"
+              method="post">
+
+            <input type="hidden"
+                   name="apunteId"
+                   th:value="${apunte.id}">
+
+            <input type="text"
+                   name="nombre"
+                   placeholder="Tu nombre"
+                   required>
+
+            <textarea name="contenido"
+                      placeholder="Escribe un comentario..."
+                      rows="5"
+                      required></textarea>
+
+            <button type="submit">
+                Publicar comentario
+            </button>
+
+        </form>
+
+<section class="comentarios-lista">
+
+    <h3>Comentarios</h3>
+
+    <p th:if="${#lists.isEmpty(comentarios)}">
+        Aún no hay comentarios.
+    </p>
+
+    <div th:each="comentario : ${comentarios}">
+        <strong th:text="${comentario.autor}"></strong>
+        <p th:text="${comentario.contenido}"></p>
+    </div>
+
+</section>
+
+</body>
+</html>
+
+<!-- ========================= 
+<style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
@@ -71,23 +146,6 @@
             line-height: 1.7;
         }
     </style>
-</head>
-<body>
-    <nav class="navbar">
-        <div class="navbar-container">
-            <div class="logo">Federico Goncalvez</div>
-        </div>
-    </nav>
 
-    <article class="article">
-        <a href="/" class="back">← Volver</a>
-        <span class="tag" th:text="${apunte.categoria}">Etiqueta</span>
-        <h1 th:text="${apunte.titulo}">Título</h1>
-        <p class="meta" th:text="${#temporals.format(apunte.fechaCreacion, 'dd MMMM yyyy')}">Fecha</p>
 
-        <img th:if="${apunte.imageUrl}" class="hero-img" th:src="${apunte.imageUrl}" th:alt="${apunte.titulo}">
-
-        <div class="content" th:text="${apunte.contenido}">Contenido</div>
-    </article>
-</body>
-</html>
+    -->
