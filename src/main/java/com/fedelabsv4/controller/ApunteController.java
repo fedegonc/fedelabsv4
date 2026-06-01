@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.fedelabsv4.model.Apunte;
+import com.fedelabsv4.dto.ApunteDTO;           // ✅ Corregido
 import com.fedelabsv4.model.Comentario;
 import com.fedelabsv4.service.ApunteService;
 import com.fedelabsv4.service.ComentarioService;
@@ -27,38 +28,20 @@ public class ApunteController {
         model.addAttribute("apuntes", apunteService.obtenerTodos());
         return "apuntes/lista";
     }
-@GetMapping("/apuntes/{slug}")
-public String verApunte(@PathVariable String slug, Model model) {
 
-    System.out.println("Slug recibido: " + slug);
-
-    return apunteService.obtenerPorSlug(slug)
-            .map(apunte -> {
-
-                System.out.println("APUNTE ENCONTRADO");
-                System.out.println("ID: " + apunte.getId());
-                System.out.println("Slug BD: " + apunte.getSlug());
-
-                model.addAttribute("apunte", apunte);
-
-                List<Comentario> comentarios =
-                        comentarioService.obtenerPorApunte(apunte.getId());
-
-                model.addAttribute("comentarios", comentarios);
-
-                return "apuntes/detalle";
-            })
-            .orElseGet(() -> {
-
-                System.out.println("NO SE ENCONTRO EL APUNTE");
-                System.out.println("Slug buscado: " + slug);
-
-                return "redirect:/apuntes";
-            });
-}
-
-
-
+    @GetMapping("/apuntes/{slug}")
+    public String verApunte(@PathVariable String slug, Model model) {
+        ApunteDTO apunteDTO = apunteService.obtenerApunteConComentarios(slug);
+        
+        if (!apunteDTO.isDisponible()) {
+            return "redirect:/apuntes";
+        }
+        
+        model.addAttribute("apunte", apunteDTO);
+        model.addAttribute("comentarios", apunteDTO.getComentarios());
+        
+        return "apuntes/detalle";
+    }
 
     @GetMapping("/admin/apuntes")
     public String adminApuntes(Model model) {

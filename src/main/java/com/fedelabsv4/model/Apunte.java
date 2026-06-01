@@ -1,54 +1,49 @@
 package com.fedelabsv4.model;
 
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+@Entity
+@Table(name = "apuntes")
 public class Apunte {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // CAMPO SLUG
+    @Column(unique = true, nullable = false)
     private String slug;
 
+    @Column(nullable = false)
     private String titulo;
+    
+    @Column(columnDefinition = "TEXT")
     private String contenido;
+    
     private String categoria;
+    
     private String imageUrl;
 
+    @Column(name = "fecha_creacion")
     private LocalDateTime fechaCreacion;
+    
+    @Column(name = "fecha_actualizacion")
     private LocalDateTime fechaActualizacion;
 
     public Apunte() {
-
-        // GENERA SLUG AUTOMÁTICO
-        this.slug = generarSlug();
-
+        this.slug = UUID.randomUUID().toString().replace("-", "").substring(0, 10);
         this.fechaCreacion = LocalDateTime.now();
         this.fechaActualizacion = LocalDateTime.now();
     }
 
-    public Apunte(Long id,
-               String titulo,
-               String contenido,
-               String categoria,
-               String imageUrl) {
-
-    this();
-
-    this.id = id;
-    this.titulo = titulo;
-    this.contenido = contenido;
-    this.categoria = categoria;
-    this.imageUrl = imageUrl;
-}
-
-    // MÉTODO PARA GENERAR SLUG
-    private String generarSlug() {
-
-        return UUID.randomUUID()
-                .toString()
-                .replace("-", "")
-                .substring(0, 10);
+    public Apunte(Long id, String titulo, String contenido, String categoria, String imageUrl) {
+        this();
+        this.id = id;
+        this.titulo = titulo;
+        this.contenido = contenido;
+        this.categoria = categoria;
+        this.imageUrl = imageUrl;
     }
 
     public Long getId() {
@@ -58,8 +53,6 @@ public class Apunte {
     public void setId(Long id) {
         this.id = id;
     }
-
-    // GETTER Y SETTER DEL SLUG
 
     public String getSlug() {
         return slug;
