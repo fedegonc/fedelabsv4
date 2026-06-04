@@ -1,44 +1,50 @@
 package com.fedelabsv4.model;
 
-import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-@Entity
-@Table(name = "apuntes")
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+@Document(collection = "apuntes")
 public class Apunte {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
 
-    @Column(unique = true, nullable = false)
     private String slug;
 
-    @Column(nullable = false)
     private String titulo;
-    
-    @Column(columnDefinition = "TEXT")
+
     private String contenido;
-    
+
     private String categoria;
-    
+
     private String imageUrl;
 
-    @Column(name = "fecha_creacion")
     private LocalDateTime fechaCreacion;
-    
-    @Column(name = "fecha_actualizacion")
+
     private LocalDateTime fechaActualizacion;
 
     public Apunte() {
-        this.slug = UUID.randomUUID().toString().replace("-", "").substring(0, 10);
+        this.slug = UUID.randomUUID()
+                .toString()
+                .replace("-", "")
+                .substring(0, 10);
+
         this.fechaCreacion = LocalDateTime.now();
         this.fechaActualizacion = LocalDateTime.now();
     }
 
-    public Apunte(Long id, String titulo, String contenido, String categoria, String imageUrl) {
+    public Apunte(
+            String id,
+            String titulo,
+            String contenido,
+            String categoria,
+            String imageUrl) {
+
         this();
+
         this.id = id;
         this.titulo = titulo;
         this.contenido = contenido;
@@ -46,11 +52,11 @@ public class Apunte {
         this.imageUrl = imageUrl;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

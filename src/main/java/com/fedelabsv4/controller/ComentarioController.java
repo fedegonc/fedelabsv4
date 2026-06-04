@@ -15,29 +15,27 @@ public class ComentarioController {
     private final ApunteService apunteService;
 
     public ComentarioController(
-        ComentarioService comentarioService,
-        ApunteService apunteService) {
+            ComentarioService comentarioService,
+            ApunteService apunteService) {
 
-    this.comentarioService = comentarioService;
-    this.apunteService = apunteService;
+        this.comentarioService = comentarioService;
+        this.apunteService = apunteService;
     }
 
-    
-   @PostMapping("/comentarios/guardar")
+    @PostMapping("/comentarios/guardar")
     public String guardarComentario(
-        @RequestParam Long apunteId,
-        @RequestParam String nombre,
-        @RequestParam String contenido) {
+            @RequestParam String apunteId,
+            @RequestParam String nombre,
+            @RequestParam String contenido) {
 
-    comentarioService.guardar(
-            apunteId,
-            nombre,
-            contenido
-    );
+        comentarioService.guardar(
+                apunteId,
+                nombre,
+                contenido
+        );
 
-    return apunteService.obtenerPorId(apunteId)
-            .map(apunte -> "redirect:/apuntes/" + apunte.getSlug())
-            .orElse("redirect:/apuntes");
-}
-
+        return apunteService.obtenerPorId(apunteId)
+                .map(apunte -> "redirect:/apuntes/" + apunte.getSlug())
+                .orElse("redirect:/apuntes");
+    }
 }

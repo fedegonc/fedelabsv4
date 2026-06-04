@@ -1,14 +1,10 @@
 package com.fedelabsv4.service;
 
+import com.fedelabsv4.dto.ApunteDTO;
 import com.fedelabsv4.model.Apunte;
 import com.fedelabsv4.model.Comentario;
 import com.fedelabsv4.repository.ApunteRepository;
-import com.fedelabsv4.dto.ApunteDTO;
-import com.fedelabsv4.dto.ComentarioDTO;
-
-import lombok.extern.slf4j.Slf4j;  // ✅ Import correcto de Lombok
-
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,15 +13,16 @@ import java.util.Optional;
 
 @Service
 @Transactional
-@Slf4j  // ✅ Lombok annotation
+@Slf4j
 public class ApunteService {
 
     private final ApunteRepository apunteRepository;
-    private final ComentarioService comentarioService;  // ✅ Inyectar por constructor
+    private final ComentarioService comentarioService;
 
-    // ✅ Constructor injection (recomendado)
-    public ApunteService(ApunteRepository apunteRepository, 
-                         ComentarioService comentarioService) {
+    public ApunteService(
+            ApunteRepository apunteRepository,
+            ComentarioService comentarioService) {
+
         this.apunteRepository = apunteRepository;
         this.comentarioService = comentarioService;
     }
@@ -36,16 +33,15 @@ public class ApunteService {
     }
 
     @Transactional(readOnly = true)
-    public Optional<Apunte> obtenerPorId(Long id) {
+    public Optional<Apunte> obtenerPorId(String id) {
         return apunteRepository.findById(id);
     }
 
     public Apunte crear(Apunte apunte) {
-        apunte.setId(null);
         return apunteRepository.save(apunte);
     }
 
-    public Optional<Apunte> actualizar(Long id, Apunte apunteActualizado) {
+    public Optional<Apunte> actualizar(String id, Apunte apunteActualizado) {
         return apunteRepository.findById(id)
                 .map(apunte -> {
                     apunte.setTitulo(apunteActualizado.getTitulo());
@@ -56,7 +52,7 @@ public class ApunteService {
                 });
     }
 
-    public boolean eliminar(Long id) {
+    public boolean eliminar(String id) {
         if (apunteRepository.existsById(id)) {
             apunteRepository.deleteById(id);
             return true;
@@ -69,24 +65,34 @@ public class ApunteService {
         return apunteRepository.findBySlug(slug);
     }
 
-    // ✅ Método para obtener Apunte con comentarios (usando DTO)
     @Transactional(readOnly = true)
-public ApunteDTO obtenerApunteConComentarios(String slug) {
-    log.debug("Buscando apunte con slug: {}", slug);
-    
-    Optional<Apunte> apunteOpt = apunteRepository.findBySlug(slug);
-    
-    if (apunteOpt.isEmpty()) {
-        log.warn("Apunte no encontrado con slug: {}", slug);
-        return ApunteDTO.noDisponible();  // ✅ Corregido
+    public ApunteDTO obtenerApunteConComentarios(String slug) {
+
+        log.debug("Buscando apunte con slug: {}", slug);
+
+        Optional<Apunte> apunteOpt = apunteRepository.findBySlug(slug);
+
+        if (apunteOpt.isEmpty()) {
+            log.warn("Apunte no encontrado con slug: {}", slug);
+            return ApunteDTO.noDisponible();
+        }
+
+        Apunte apunte = apunteOpt.get();
+
+        log.debug(
+                "Apunte encontrado - ID: {}, Slug: {}",
+                apunte.getId(),
+                apunte.getSlug()
+        );
+
+        List<Comentario> comentarios =
+                comentarioService.obtenerPorApunte(apunte.getId());
+
+        log.debug(
+                "Comentarios encontrados: {}",
+                comentarios.size()
+        );
+
+        return ApunteDTO.disponible(apunte, comentarios);
     }
-    
-    Apunte apunte = apunteOpt.get();
-    log.debug("Apunte encontrado - ID: {}, Slug: {}", apunte.getId(), apunte.getSlug());
-    
-    List<Comentario> comentarios = comentarioService.obtenerPorApunte(apunte.getId());
-    log.debug("Comentarios encontrados: {}", comentarios.size());
-    
-    return ApunteDTO.disponible(apunte, comentarios);
-}
 }

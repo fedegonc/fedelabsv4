@@ -1,7 +1,7 @@
+
 package com.fedelabsv4.service;
 
 import java.util.List;
-
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,7 +15,7 @@ public class ComentarioService {
     @Autowired
     private ComentarioRepository comentarioRepository;
 
-    public void guardar(Long apunteId, String autor, String contenido) {
+    public void guardar(String apunteId, String autor, String contenido) {
 
         Comentario comentario = new Comentario();
 
@@ -26,10 +26,9 @@ public class ComentarioService {
         comentarioRepository.save(comentario);
 
         System.out.println("Comentario guardado!");
-
     }
 
-    public List<Comentario> obtenerPorApunte(Long apunteId) {
-    return comentarioRepository.findByApunteId(apunteId);
-}
+    public List<Comentario> obtenerPorApunte(String apunteId) {
+        return comentarioRepository.findByApunteId(apunteId);
+    }
 }

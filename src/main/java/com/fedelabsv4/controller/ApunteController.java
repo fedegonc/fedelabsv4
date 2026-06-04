@@ -1,11 +1,7 @@
 package com.fedelabsv4.controller;
 
-import java.util.List;
-import java.util.Optional;
-
+import com.fedelabsv4.dto.ApunteDTO;
 import com.fedelabsv4.model.Apunte;
-import com.fedelabsv4.dto.ApunteDTO;           // ✅ Corregido
-import com.fedelabsv4.model.Comentario;
 import com.fedelabsv4.service.ApunteService;
 import com.fedelabsv4.service.ComentarioService;
 
@@ -31,21 +27,26 @@ public class ApunteController {
 
     @GetMapping("/apuntes/{slug}")
     public String verApunte(@PathVariable String slug, Model model) {
-        ApunteDTO apunteDTO = apunteService.obtenerApunteConComentarios(slug);
-        
+
+        ApunteDTO apunteDTO =
+                apunteService.obtenerApunteConComentarios(slug);
+
         if (!apunteDTO.isDisponible()) {
             return "redirect:/apuntes";
         }
-        
+
         model.addAttribute("apunte", apunteDTO);
-        model.addAttribute("comentarios", apunteDTO.getComentarios());
-        
+        model.addAttribute("comentarios",
+                apunteDTO.getComentarios());
+
         return "apuntes/detalle";
     }
 
     @GetMapping("/admin/apuntes")
     public String adminApuntes(Model model) {
-        model.addAttribute("apuntes", apunteService.obtenerTodos());
+        model.addAttribute("apuntes",
+                apunteService.obtenerTodos());
+
         return "apuntes/admin-lista";
     }
 
@@ -53,17 +54,23 @@ public class ApunteController {
     public String nuevoApunte(Model model) {
         model.addAttribute("apunte", new Apunte());
         model.addAttribute("modoEdicion", false);
+
         return "apuntes/admin-form";
     }
 
     @PostMapping("/admin/apuntes")
     public String crearApunte(@ModelAttribute Apunte apunte) {
+
         Apunte guardado = apunteService.crear(apunte);
+
         return "redirect:/apuntes/" + guardado.getSlug();
     }
 
     @GetMapping("/admin/apuntes/editar/{id}")
-    public String editarApunte(@PathVariable Long id, Model model) {
+    public String editarApunte(
+            @PathVariable String id,
+            Model model) {
+
         return apunteService.obtenerPorId(id)
                 .map(apunte -> {
                     model.addAttribute("apunte", apunte);
@@ -75,18 +82,22 @@ public class ApunteController {
 
     @PostMapping("/admin/apuntes/editar/{id}")
     public String actualizarApunte(
-            @PathVariable Long id,
+            @PathVariable String id,
             @ModelAttribute Apunte apunte) {
 
         return apunteService.actualizar(id, apunte)
                 .map(apunteActualizado ->
-                        "redirect:/apuntes/" + apunteActualizado.getSlug())
+                        "redirect:/apuntes/" +
+                                apunteActualizado.getSlug())
                 .orElse("redirect:/admin/apuntes");
     }
 
     @PostMapping("/admin/apuntes/eliminar/{id}")
-    public String eliminarApunte(@PathVariable Long id) {
+    public String eliminarApunte(
+            @PathVariable String id) {
+
         apunteService.eliminar(id);
+
         return "redirect:/admin/apuntes";
     }
 }
